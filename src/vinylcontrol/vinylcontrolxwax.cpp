@@ -161,10 +161,14 @@ VinylControlXwax::VinylControlXwax(UserSettingsPointer pConfig, const QString& g
     //}
     s_xwaxLUTMutex.unlock();
 
+    m_transmitSocket = new UdpTransmitSocket(IpEndpointName("127.0.0.1", 10000));
+
     qDebug() << "Starting vinyl control xwax thread";
 }
 
 VinylControlXwax::~VinylControlXwax() {
+    delete m_transmitSocket;
+
     delete m_pSteadySubtle;
     delete m_pSteadyGross;
 
@@ -879,6 +883,14 @@ float VinylControlXwax::getAngle() {
 
     if (pos == -1) {
         return -1.0;
+    } else {
+        char buffer[64];
+        osc::OutboundPacketStream p(buffer, 64);
+        p << osc::BeginBundleImmediate
+          << osc::BeginMessage("/vinyl")
+          << pos << osc::EndMessage
+          << osc::EndBundle;
+        m_transmitSocket->Send(p.Data(), p.Size());    
     }
 
     const auto rps = static_cast<float>(timecoder_revs_per_sec(&timecoder));

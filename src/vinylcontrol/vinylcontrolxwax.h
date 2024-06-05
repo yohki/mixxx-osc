@@ -6,6 +6,9 @@
 #include "util/types.h"
 #include "vinylcontrol/vinylcontrol.h"
 
+#include "oscpack/osc/OscOutboundPacketStream.h"
+#include "oscpack/ip/UdpSocket.h"
+
 #ifdef _MSC_VER
 #include "timecoder.h"
 #else
@@ -146,4 +149,6 @@ class VinylControlXwax : public VinylControl {
     // Static mutex that protects our creation/destruction of the xwax LUTs
     static QMutex s_xwaxLUTMutex;
     static bool s_bLUTInitialized;
+
+    UdpTransmitSocket* m_transmitSocket;
 };

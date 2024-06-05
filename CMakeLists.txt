@@ -3792,8 +3792,14 @@ if(VINYLCONTROL)
   add_library(mixxx-xwax STATIC EXCLUDE_FROM_ALL)
   target_sources(mixxx-xwax PRIVATE lib/xwax/timecoder.c lib/xwax/lut.c)
   target_include_directories(mixxx-xwax SYSTEM PUBLIC lib/xwax)
-  target_link_libraries(mixxx-lib PRIVATE mixxx-xwax)
+  target_link_libraries(mixxx-lib PRIVATE mixxx-xwax Ws2_32 winmm)
 endif()
+
+# OSCPack
+add_subdirectory(src/oscpack)
+target_include_directories(oscpack SYSTEM PUBLIC src/oscpack)
+#add_library(oscpack STATIC EXCLUDE_FROM_ALL)
+target_link_libraries(mixxx-xwax PRIVATE oscpack)
 
 # WavPack audio file support
 find_package(wavpack)
